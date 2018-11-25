@@ -49,7 +49,7 @@ process.on('SIGINT', function () {
 });
 
 //catch uncaught exceptions, trace, then exit normally
-process.on('uncaughtExceptio1n', function(e) {
+process.on('uncaughtException', function(e) {
     console.log('Uncaught Exception...');
     console.log(e.stack);
 	process.exit();
@@ -62,7 +62,6 @@ db.checkConnection()
     return db.checkTable(config.tableName, config.dataObj);
 })
 .then(function(status){
-    console.log('db status', status)
     appServer = require('http').createServer(app).listen(config.port, function() {
         console.log('                                +-+-+-+-+-+-+-+-+-+-+-+-+');
         console.log('                                |   J o b M a n   1.0   |');
@@ -78,8 +77,6 @@ db.checkConnection()
 			// Use socket to communicate with this particular client only, sending it it's own id
 			socket.emit('welcome', { message: 'Welcome!', id: socket.id });
 		});
-		// app.use(expressStatus({ websocket: io, port: app.get('port') }));			// status monitor
-		app.use(expReqLogger());
 		routers = require('./_core/routers.js')(io);
 		app.use(routers); // call the controllers
 

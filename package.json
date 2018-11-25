@@ -23,12 +23,14 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "favicon": "0.0.2",
     "helmet": "^3.15.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1",
-    "unirest": "^0.5.1"
+    "unirest": "^0.5.1",
+    "uuid": "^3.3.2"
   }
 }
