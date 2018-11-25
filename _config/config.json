@@ -1,0 +1,24 @@
+{
+    "port": 9000,
+    "sessionKey": "sha256 of 'jobman'",
+    "dbType": "elasticsearch",
+    "tableName": "jobman",
+    "dataObj": {
+        "id": "jobID",
+        "input": {},
+        "log": ["YTS: In Job Queue"],
+        "params": {},
+        "progress": 0,
+        "stage": {},
+        "status": "queue",
+        "time": {
+            "start": "1543151577240",
+            "end": "1543151577240",
+            "last": "1543151577240",
+            "waiting": "",
+            "queue": "",
+            "process": ""
+        },
+        "ttl": "120"
+    }
+}
