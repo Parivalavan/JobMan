@@ -59,7 +59,7 @@ var db = require('./_core/db/' + config.dbType + '.js');
 
 db.checkConnection()
 .then(function(status){
-    return db.checkTable(config.tableName, config.dataObj);
+    return db.checkTable(config.dbName, config.tableName, config.dataObj);
 })
 .then(function(status){
     appServer = require('http').createServer(app).listen(config.port, function() {

@@ -59,9 +59,10 @@ es.checkConnection = function () {
 /**
  * check if index is present of the given name, if not try to create an index
  * @param {string} indexName - name of the index to create
- * @param {dataObj} dataObj - object schema
+ * @param {string} indexType - name of the document type
+ * @param {object} dataObj - object schema
  */
-es.checkTable = function(indexName, dataObj){
+es.checkTable = function(indexName, indexType, dataObj){
     return new Promise(function (resolve, reject) {
         interact('HEAD', esconfig.url + '/' + indexName, {
             "cache-control": "no-cache",
@@ -89,4 +90,23 @@ es.checkTable = function(indexName, dataObj){
             }
         });
     });
+}
+
+/**
+ * given a job id, get the job object
+ * @param {string} indexName - name of the
+ */
+es.getJob = function(indexName, indexType, jobID){
+    return new Promise (function(resolve, reject){
+        interact('GET', esconfig.url + '/' + indexName + '/' + indexType + '/' + jobID, {
+            "cache-control": "no-cache",
+            "Content-Type": "application/x-www-form-urlencoded"
+        })
+        .then(function (obj) {
+            resolve(obj)
+        })
+        .catch(function (obj) {
+            reject(obj);
+        });
+    })
 }

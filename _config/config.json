@@ -2,7 +2,8 @@
     "port": 9000,
     "sessionKey": "sha256 of 'jobman'",
     "dbType": "elasticsearch",
-    "tableName": "jobman",
+    "dbName": "jobman",
+    "tableName": "jobs",
     "dataObj": {
         "id": "jobID",
         "input": {},
@@ -20,5 +21,38 @@
             "process": ""
         },
         "ttl": "120"
+    },
+    "statusUpdate": "http://localhost:9000/updateJob",
+    "servers": {
+        "MicroService1": [
+            "http://localhost:9011",
+            "http://localhost:9012",
+            "http://localhost:9013",
+            "http://localhost:9014"
+        ],
+        "MicroService2": [
+            "http://localhost:9021",
+            "http://localhost:9022",
+            "http://localhost:9023",
+            "http://localhost:9024"
+        ],
+        "MicroService3": [
+            "http://localhost:9031",
+            "http://localhost:9032",
+            "http://localhost:9033",
+            "http://localhost:9034"
+        ],
+        "MicroService4": [
+            "http://localhost:9041",
+            "http://localhost:9042",
+            "http://localhost:9043",
+            "http://localhost:9044"
+        ]
+    },
+    "steps": {
+        "MicroService1": [ "step1", "step2", "step3" ],
+        "MicroService2": [ "step1", "step2", "step3" ],
+        "MicroService3": [ "step1", "step2", "step3" ],
+        "MicroService4": [ "step1", "step2", "step3" ]
     }
 }

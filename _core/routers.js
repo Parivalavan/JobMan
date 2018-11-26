@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser')
-	, cookieParser = require('cookie-parser')
+    , cookieParser = require('cookie-parser')
+    , db = require('../_core/db/' + config.dbType + '.js')
 	, express = require('express')
 	, path = require('path')
 	, router = express.Router()
@@ -20,6 +21,34 @@ module.exports = function (io) {
     });
 
     router.post('/jobStatus', function (req, res) {
+        var reqJobID = req.body.id;
+        if (typeof (req.body) == 'undefined' || !req.body.id) {
+            res.status(500).json({
+                'status': { 'code': 500, 'message': 'failure' },
+                'message': {'error' : 'please provide a valid job id'}
+            }).end();
+		}
+		else if (jm[reqJobID]) {
+            res.status(200).json({
+                'status': { 'code': 200, 'message': 'success' },
+                'message': {reqJobID : jm[reqJobID]}
+            }).end();
+        }
+        else {
+            db.getJob(config.dbName, config.tableName, reqJobID)
+			.then(function (result) {
+                res.status(200).json({
+                    'status': { 'code': 200, 'message': 'success' },
+                    'message': {reqJobID : result}
+                }).end();
+			})
+			.catch(function (err) {
+                res.status(500).json({
+                    'status': { 'code': 500, 'message': 'failure' },
+                    'message': {error : err}
+                }).end();
+			})
+        }
     });
 
     router.post('/deleteJob', function (req, res) {
