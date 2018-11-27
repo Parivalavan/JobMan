@@ -110,3 +110,18 @@ es.getJob = function(indexName, indexType, jobID){
         });
     })
 }
+
+es.updateJob = function(indexName, indexType, jobID, jobObj){
+    return new Promise (function(resolve, reject){
+        interact('POST', esconfig.url + '/' + indexName + '/' + indexType + '/' + jobID, {
+            "cache-control": "no-cache",
+            "Content-Type": "application/x-www-form-urlencoded"
+        }, jobObj)
+        .then(function (obj) {
+            resolve(obj)
+        })
+        .catch(function (obj) {
+            reject(obj);
+        });
+    })
+}

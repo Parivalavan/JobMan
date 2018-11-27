@@ -5,17 +5,19 @@
     "dbName": "jobman",
     "tableName": "jobs",
     "dataObj": {
-        "id": "jobID",
+        "id": "{{jobID}}",
         "input": {},
         "log": ["YTS: In Job Queue"],
         "params": {},
+        "processType": "{{processType}}",
         "progress": 0,
+        "runningOnServer": "",
         "stage": {},
         "status": "queue",
         "time": {
-            "start": "1543151577240",
-            "end": "1543151577240",
-            "last": "1543151577240",
+            "start": "{{currTime}}",
+            "end": "{{currTime}}",
+            "last": "{{currTime}}",
             "waiting": "",
             "queue": "",
             "process": ""
@@ -54,5 +56,11 @@
         "MicroService2": [ "step1", "step2", "step3" ],
         "MicroService3": [ "step1", "step2", "step3" ],
         "MicroService4": [ "step1", "step2", "step3" ]
+    },
+    "ttl": {
+        "MicroService1": 120,
+        "MicroService2": 120,
+        "MicroService3": 120,
+        "MicroService4": 120
     }
 }

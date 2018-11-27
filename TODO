@@ -1,0 +1,8 @@
+JobMan:
+    ☐ /addJob
+        ☐ check if the requested job of given process type is currently in process, if so return the processing job id
+        ☐ clone the default job template and fill in the values
+        ☐ update db
+        ☐ add the job created to the list of jobs in progress
+        ☐ send request for processing
+    ☐
