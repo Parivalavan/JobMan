@@ -10,10 +10,59 @@ var bodyParser = require('body-parser')
 
 module.exports = function (io) {
     var socket = io;
-    // we need an object to store the jobs categorised by processtype (microservices)
-    var jm = {};
-    Object.keys(config.servers).forEach(function (key) {
-        jm[key] = {};
+    /**
+     * we need an object to store the jobs categorised by processtype (microservices)
+     *
+     * {
+     *   "MicroService1": {
+     *     "http://localhost": {
+     *       "9011": {
+     *         "step1": "",
+     *         "step2": "",
+     *         "step3": ""
+     *       },
+     *       "9012": {
+     *         "step1": "",
+     *         "step2": "",
+     *         "step3": ""
+     *       },
+     *       "9013": {
+     *         "step1": "",
+     *         "step2": "",
+     *         "step3": ""
+     *       },
+     *       "9014": {
+     *         "step1": "",
+     *         "step2": "",
+     *         "step3": ""
+     *       }
+     *     }
+     *   }
+     * }
+     */
+    var jm = {}; var jobsObj = {};
+    Object.keys(config.servers).forEach(function (serviceName) {
+        jm[serviceName] = {};
+        jobsObj[serviceName] = {};
+        console.log('serviceName:', serviceName);
+        var serviceObj = config.servers[serviceName];
+        Object.keys(serviceObj).forEach(function (serviceIndex) {
+            var serverObj = serviceObj[serviceIndex];
+            Object.keys(serverObj).forEach(function (host) {
+                jm[serviceName][host] = {};
+                console.log('service host:', host);
+                var portsArray = serverObj[host];
+                Object.keys(portsArray).forEach(function (portIndex) {
+                    var portNumber = portsArray[portIndex];
+                    jm[serviceName][host][portNumber] = {};
+                    var serviceSteps = config.steps[serviceName];
+                    Object.keys(serviceSteps).forEach(function (stepIndex) {
+                        jm[serviceName][host][portNumber][serviceSteps[stepIndex]] = "";
+                        console.log(portNumber);
+                    });
+                });
+            });
+        });
     });
     router.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))		// parse application/x-www-form-urlencoded
     router.use(bodyParser.json({ type: 'application/json' }))				// parse application/json
@@ -44,15 +93,28 @@ module.exports = function (io) {
         var jobObj = JSON.stringify(config.dataObj);
         jobObj = jobObj.replace(/\{\{jobID\}\}/, jobID).replace(/\{\{currTime\}\}/gi, (new Date).getTime());
         jobObj = JSON.parse(jobObj.replace('{{processType}}', reqObj.processType));
+        // set the default job priority if not given or if unknown value
+        if (!reqObj.priority) {
+            reqObj.priority = 'low';
+        }
+        else if (!/^(low|normal|high)$/.test(reqObj.priority)){
+            reqObj.priority = 'low';
+        }
         db.updateJob(config.dbName, config.tableName, reqJobID, jobObj)
             .then(function (result) {
                 res.status(200).json({
                     'status': { 'code': 200, 'message': 'success' },
                     'message': { 'jobid': jobID, 'log': 'Job added successfully' }
                 }).end();
+                jobObj.killJob = setTimeout(function(){
+                    killJob(jobID);
+                }, config.ttl[reqObj.processType]);
+                jobsObj[reqObj.processType][jobID] = jobObj;
                 processJob(reqObj.processType);
             })
             .catch(function (err) {
+                jobObj.status = 'failed';
+                jobObj.log.push('Failed to update DB');
                 res.status(500).json({
                     'status': { 'code': 500, 'message': 'failure' },
                     'message': { error: err, 'log': 'Unable to add job' }
@@ -61,7 +123,44 @@ module.exports = function (io) {
     });
 
     router.post('/updateJob', function (req, res) {
-        // based on the status code returned
+        /**
+         * Sample request body would be like
+         *
+         *   {
+         *       "status": {
+         *       "code": 202,
+         *       "message": "in-progress"
+         *       },
+         *       "message": {
+         *       "log": "Reading configs...",
+         *       "endPoint": "collectfiles",
+         *       "jobid": "jobnum",
+         *       "progress": 0,
+         *       "step": "Read configs"
+         *       }
+         *   }
+         *
+         * The following are the `status.code` expected:
+         * 200 - the step/stage has completed
+         * 202 - work in-progress / progress update
+         * 500 - something went wrong during processing
+         *
+         */
+        var reqObj = req.body;
+        if (!reqObj.status || !reqObj.status.code) {
+            res.status(500).json({
+                'status': { 'code': 500, 'message': 'failure' },
+                'message': { 'error': 'please provide a status object with status.code having `200|202|500`' }
+            }).end();
+            return true;
+        }
+        if (reqObj.status.code == 200) {
+
+        }
+        else if (reqObj.status.code == 500) {
+
+        }
+
     });
 
     /**
@@ -99,6 +198,10 @@ module.exports = function (io) {
     });
 
     router.post('/deleteJob', function (req, res) {
+        res.status(200).json({
+            'status': { 'code': 200, 'message': 'success' },
+            'message': { 'log': 'To Be Implemented' }
+        }).end();
     });
 
     router.all('*', function (req, res) {

@@ -27,28 +27,16 @@
     "statusUpdate": "http://localhost:9000/updateJob",
     "servers": {
         "MicroService1": [
-            "http://localhost:9011",
-            "http://localhost:9012",
-            "http://localhost:9013",
-            "http://localhost:9014"
+            {"http://localhost": ["9011", "9012", "9013", "9014"]}
         ],
         "MicroService2": [
-            "http://localhost:9021",
-            "http://localhost:9022",
-            "http://localhost:9023",
-            "http://localhost:9024"
+            {"http://localhost": ["9021", "9022", "9023", "9024"]}
         ],
         "MicroService3": [
-            "http://localhost:9031",
-            "http://localhost:9032",
-            "http://localhost:9033",
-            "http://localhost:9034"
+            {"http://localhost": ["9031", "9032", "9033", "9034"]}
         ],
         "MicroService4": [
-            "http://localhost:9041",
-            "http://localhost:9042",
-            "http://localhost:9043",
-            "http://localhost:9044"
+            {"http://localhost": ["9041", "9042", "9043", "9044"]}
         ]
     },
     "steps": {
